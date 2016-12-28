@@ -1,15 +1,19 @@
-# php-parser-tests
+# php-parser-dev
 
-Separate repository in order to test the php-parser library
+Separate repository in order to test the php-parser library. If you want to test it over a specific php library, open an issue.
 
-# Try it
+[![npm version](https://badge.fury.io/js/php-parser.svg)](https://www.npmjs.com/package/php-parser)
+[![Coverage Status](https://img.shields.io/coveralls/glayzzle/php-parser.svg)](https://coveralls.io/r/glayzzle/php-parser)
+[![Gitter](https://img.shields.io/badge/GITTER-join%20chat-green.svg)](https://gitter.im/glayzzle/Lobby)
+
+## Try it
 
 ```sh
 $ cd bin
 $ node test.js -e "echo 'Hello World';"
 ```
 
-# Join the dev
+## Join the dev
 
 In order to contribute you must fork the php-parser project :
 
