@@ -130,6 +130,7 @@ module.exports = {
     } else {
       // test the AST parser to ensure that the struture can be parsed
       try {
+        var hrstart = process.hrtime();
         var ast = engine.parseCode(buffer, {
           lexer: {
             short_tags: false
@@ -138,6 +139,11 @@ module.exports = {
             extractDoc: true
           }
         });
+        var  hrend = process.hrtime(hrstart);
+        if (hrend[1] && hrend[1] > 10000 * 50000) {
+          console.log('Warning, slow parsing of ' + filename + ' ('+jsTok.length+' tokens in '+(Math.round(hrend[1] / 100000) / 10)+'ms)')
+        }
+
         if (!ast || ast.kind !== 'program') throw new Error('not a program node');
         if (engine.parser.debug) {
           console.log(

@@ -273,7 +273,18 @@ function runTests() {
         if (file[0] != '.') {
           var stat = fs.statSync(path + file);
           if (!stat.isDirectory()) {
-            files.push(path + file);
+            var filename = path + file;
+            var extension = getExtension(filename);
+            var found = false;
+            for(var e = 0; e < engines.length; e++) {
+              if (engines[e].handles(filename, extension)) {
+                found = true;
+                break;
+              }
+            }
+            if (found) {
+              files.push(filename);
+            }
           } else if (options.recusive) {
             scanFiles(path + file + '/');
           }
