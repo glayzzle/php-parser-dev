@@ -3,7 +3,8 @@
 Separate repository in order to test the php-parser library. If you want to test it over a specific php library, open an issue.
 
 [![npm version](https://badge.fury.io/js/php-parser.svg)](https://www.npmjs.com/package/php-parser)
-[![Coverage Status](https://img.shields.io/coveralls/glayzzle/php-parser.svg)](https://coveralls.io/r/glayzzle/php-parser)
+[![Build Status](https://travis-ci.org/glayzzle/php-parser-dev.svg?branch=master)](https://travis-ci.org/glayzzle/php-parser-dev)
+[![Coverage Status](https://coveralls.io/repos/github/glayzzle/php-parser-dev/badge.svg?branch=master)](https://coveralls.io/github/glayzzle/php-parser-dev?branch=master)
 [![Gitter](https://img.shields.io/badge/GITTER-join%20chat-green.svg)](https://gitter.im/glayzzle/Lobby)
 
 ## Try it
