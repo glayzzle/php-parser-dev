@@ -1,0 +1,25 @@
+{
+  "name": "php-parser-dev",
+  "version": "0.0.0",
+  "description": "tests for php-parser lib",
+  "main": "bin/test.js",
+  "scripts": {
+    "cover": "node --stack-size=5000 node_modules/istanbul/lib/cli.js cover -x \"**/bin/**\" bin/test.js -- -r -d test/ -m lib/test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glayzzle/php-parser-tests.git"
+  },
+  "author": "Ioan CHIRIAC",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/glayzzle/php-parser-tests/issues"
+  },
+  "homepage": "https://github.com/glayzzle/php-parser-tests#readme",
+  "dependencies": {
+    "coveralls": "^2.11.15",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "should": "^11.1.2"
+  }
+}

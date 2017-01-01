@@ -35,9 +35,9 @@ module.exports = {
       var  hrend = process.hrtime(hrstart);
       if (hrend[1] > 0)
       console.log(
-        'Speed : ', 
-        (Math.round(jsTok.length / 1000) / 10) + 'K Tokens parsed at ', 
-        (Math.round(jsTok.length * 60000 / (hrend[1] / 1000000) / 1000 / 100) / 10) + 'M Token/sec - total time ', 
+        'Speed : ',
+        (Math.round(jsTok.length / 1000) / 10) + 'K Tokens parsed at ',
+        (Math.round(jsTok.length * 60000 / (hrend[1] / 1000000) / 1000 / 100) / 10) + 'M Token/sec - total time ',
         Math.round(hrend[1] / 100000) / 10, 'ms'
       );
       console.log('Memory : ', Math.round((process.memoryUsage().heapUsed - mem.heapUsed) / 1024), 'kb');
@@ -56,7 +56,7 @@ module.exports = {
         return true; // ignore this test : php can't parse the file
       }
     }
-    
+
     var fail = false;
     var error = [[], []];
 
@@ -92,7 +92,7 @@ module.exports = {
           }
           if (p[2] != j[2]) { // check the token line
             console.log('NOTICE : Expected line ' + p[2] + ', but found ' + j[2]);
-            fail = true; 
+            fail = true;
           }
         } else {
           console.log('FAIL : Expected ' + p[0] + ' token, but found "' + j + '" symbol');
@@ -131,18 +131,21 @@ module.exports = {
       // test the AST parser to ensure that the struture can be parsed
       try {
         var ast = engine.parseCode(buffer, {
+          lexer: {
+            short_tags: false
+          },
           parser: {
             extractDoc: true
           }
         });
-        if (ast[0] !== 'program') throw new Error('not a program node');
+        if (!ast || ast.kind !== 'program') throw new Error('not a program node');
         if (engine.parser.debug) {
           console.log(
             util.inspect(
-              ast[1], { 
-                showHidden: false, 
-                depth: 10, 
-                colors: true 
+              ast[1], {
+                showHidden: false,
+                depth: 10,
+                colors: true
               }
             )
           );
@@ -153,7 +156,7 @@ module.exports = {
         console.log(e);
         return true;
       }
-      
+
       if (engine.parser.debug) {
         console.log('v - Passed ' + jsTok.length + ' tokens');
       }
