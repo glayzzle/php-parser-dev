@@ -58,11 +58,11 @@ module.exports = {
             }
           } catch(e) {
             if (mode.length > 1 && mode[1] === 'FAIL') {
-              if (engine.parser.lastError.line != mode[2]) {
+              if (e.lineNumber != mode[2]) {
                 ok = false;
                 console.log(
                   'Expected to fail at line ' + mode[2] +
-                  ' but fail at ' + engine.parser.lastError.line
+                  ' but fail at ' + e.lineNumber
                 );
               }
             } else {
