@@ -57,7 +57,7 @@ module.exports = {
       }
     }
 
-    var fail = false;
+    var fail = false, ignoreSize = false;
     var error = [[], []];
 
     // CHECK ALL TOKENS
@@ -75,15 +75,22 @@ module.exports = {
       if ( p instanceof Array ) {
         if ( j instanceof Array ) {
           if (p[0] != j[0]) { // check the token type
-            if (
+            /*if (
               (p[0] == 'T_LNUMBER' || p[0] == 'T_DNUMBER')
               && (j[0] == 'T_LNUMBER' || j[0] == 'T_DNUMBER')
             ) {
               // @fixme : ignore numbers size - long are not handled in same way
-            } else {
-              console.log('FAIL : Expected ' + p[0] + ' token, but found ' + j[0]);
-              fail = true;
-            }
+            } else {*/
+            console.log('FAIL : Expected ' + p[0] + ' token, but found ' + j[0]);
+            fail = true;
+            //}
+          }
+          if (p[0] === 'T_HALT_COMPILER' && !fail) {
+            // should not check tokens after T_HALT_COMPILER
+            // because php 5.x differs from php 7.x
+            // @todo use by default the php7 behavior
+            ignoreSize = true;
+            break;
           }
           if (p[1] != j[1]) { // check the token contents
             j[1] = JSON.parse( JSON.stringify( j[1] ) );
@@ -112,7 +119,7 @@ module.exports = {
     }
 
     // OUTPUT ERRORS IF FOUND
-    if (phpTok.length != jsTok.length) {
+    if (!ignoreSize && phpTok.length != jsTok.length) {
       console.log('FAIL : Token arrays have not the same length !');
       fail = true;
     }

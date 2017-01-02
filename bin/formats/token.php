@@ -18,8 +18,10 @@
       $t[1] = utf8_encode($t[1]);
     }
     echo json_encode( $t );
+    if ($t[0] === 'T_HALT_COMPILER') break; // last token to test
     if ($p !== $last) {
       echo ',';
     }
+
   }
   echo ']';
