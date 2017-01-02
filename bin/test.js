@@ -12,7 +12,6 @@ var path    = require('path');
 
 var engine  = require('../lib/src/index');
 engine = new engine();
-
 engine.lexer.short_tags = true;
 
 // help screen
