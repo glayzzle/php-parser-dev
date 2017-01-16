@@ -8,7 +8,7 @@
       $files[] = file_get_contents($path . $file);
     }
   }
-  
+
   $start = microtime(true);
   $mem = memory_get_usage(true);
   $count = 0;
