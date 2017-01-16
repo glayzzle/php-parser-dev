@@ -10,9 +10,21 @@ var util    = require('util');
 var fs      = require('fs');
 var path    = require('path');
 
+/**
+ * Initialize engine
+ */
 var engine  = require('../lib/src/index');
-engine = new engine();
-engine.lexer.short_tags = true;
+engine = new engine({
+  ast: {
+    withPositions: true
+  },
+  lexer: {
+    short_tags: true
+  },
+  parser: {
+    extractDoc: true
+  }
+});
 
 // help screen
 function printHelp() {
@@ -79,6 +91,7 @@ while (args.length > 0 && isOption(args[0])) {
     case '-v':
       engine.parser.locations = true;
       engine.parser.debug = true;
+      engine.lexer.debug = true;
       break;
 
     case '-s':
