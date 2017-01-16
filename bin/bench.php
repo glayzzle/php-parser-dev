@@ -1,12 +1,9 @@
 <?php
 
   $files = array();
-  $path = $argv[array_search('-d', $argv) + 1];
-  $items = scandir($path);
-  foreach($items as $file) {
-    if (substr($file, -4) === '.php') {
-      $files[] = file_get_contents($path . $file);
-    }
+  $names = explode(';', $argv[array_search('-f', $argv) + 1]);
+  foreach($names as $name) {
+    $files[] = file_get_contents($name);
   }
 
   $start = microtime(true);

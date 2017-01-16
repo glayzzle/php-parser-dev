@@ -24,21 +24,30 @@ function duration(text, hrTime) {
 }
 
 // preparing files for tests
+var names = [];
 var files = [];
-var path = __dirname + '/../test/token/';
-var items = fs.readdirSync(path);
-for(var i = 0; i < items.length; i ++) {
-  var file = items[i];
-  if (file[0] != '.') {
-    var stat = fs.statSync(path + file);
-    if (!stat.isDirectory()) {
-      files.push(
-        fs.readFileSync(path + file, {
-          encoding: 'binary'
-        })
-      );
+if (process.argv.length === 1) {
+  names.push(process.argv[0]);
+} else {
+  // scan token folder
+  var path = __dirname + '/../test/token/';
+  var items = fs.readdirSync(path);
+  for(var i = 0; i < items.length; i ++) {
+    var file = items[i];
+    if (file[0] != '.') {
+      var stat = fs.statSync(path + file);
+      if (!stat.isDirectory()) {
+        names.push(path + file);
+      }
     }
   }
+}
+for(var i = 0; i < names.length; i++) {
+  files.push(
+    fs.readFileSync(names[i], {
+      encoding: 'binary'
+    })
+  );
 }
 
 // test FN
@@ -84,30 +93,10 @@ function compareResults(a, b) {
   }
 }
 
-// parsing tests
-if (typeof global.gc === 'function') global.gc();
-console.log('\n--- parsing files - actual lexer version :');
-var engine = require('../lib/src/index');
-engine = new engine({
-  lexer: {
-    asp_tags: true,
-    short_tags: true
-  }
-});
-var actual = consumeTokens(engine, files);
-
-// test the old library version
-if (typeof global.gc === 'function') global.gc();
-console.log('\n--- parsing files - jison lexer version :');
-engine.lexer = require('./jison-lexer');
-engine.lexer.asp_tags = true;
-engine.lexer.short_tags = true;
-var jison = consumeTokens(engine, files);
-
 // original php results
 console.log('\n--- parsing files - plain PHP version :');
 var cmd = require('./formats/cmd');
-var result = cmd.exec('php -d short_open_tag=1 ' + __dirname + '/bench.php -d ' + path);
+var result = cmd.exec('php -d short_open_tag=1 ' + __dirname + '/bench.php -f "' + names.join(';') + '"');
 var php = false;
 try {
   php = JSON.parse(result.stdout);
@@ -119,11 +108,43 @@ try {
   console.log('Fail to parse output : ', result.stdout);
 }
 
+// parsing tests
+if (typeof global.gc === 'function') global.gc();
+try {
+  console.log('\n--- parsing files - actual lexer version :');
+  var engine = require('../lib/src/index');
+  engine = new engine({
+    lexer: {
+      asp_tags: true,
+      short_tags: true
+    }
+  });
+  var actual = consumeTokens(engine, files);
+} catch(e) {
+  console.error(e.stack);
+}
+// test the old library version
+if (typeof global.gc === 'function') global.gc();
+try {
+  console.log('\n--- parsing files - jison lexer version :');
+  engine.lexer = require('./jison-lexer');
+  engine.lexer.asp_tags = true;
+  engine.lexer.short_tags = true;
+  var jison = consumeTokens(engine, files);
+} catch(e) {
+  console.error(e.stack);
+}
 
 // results
-console.log('\n--- results Actual vs Jison :');
-compareResults(actual, jison);
-console.log('\n--- results Actual vs PHP :');
-compareResults(actual, php);
-console.log('\n--- results Jison vs PHP :');
-compareResults(jison, php);
+if (jison && actual) {
+  console.log('\n--- results Actual vs Jison :');
+  compareResults(actual, jison);
+}
+if (actual && php) {
+  console.log('\n--- results Actual vs PHP :');
+  compareResults(actual, php);
+}
+if (jison && php) {
+  console.log('\n--- results Jison vs PHP :');
+  compareResults(jison, php);
+}
