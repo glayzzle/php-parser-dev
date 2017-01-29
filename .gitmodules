@@ -37,3 +37,6 @@
 [submodule "test/php-langspec"]
 	path = test/php-langspec
 	url = https://github.com/glayzzle/php-langspec.git
+[submodule "test/token/wordpress"]
+	path = test/token/wordpress
+	url = https://github.com/WordPress/WordPress.git
