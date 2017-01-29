@@ -29,6 +29,7 @@ $ node test.js -e "echo 'Hello World';"
 * [opencart](https://github.com/opencart/opencart)
 * [php-langspec](https://github.com/glayzzle/php-langspec)
 * [wordpress](https://github.com/WordPress/WordPress)
+* [cakephp](https://github.com/cakephp/cakephp)
 * if you want another framework to be tested, just report an issue
 
 ## Join the dev

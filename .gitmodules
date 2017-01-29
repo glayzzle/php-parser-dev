@@ -40,3 +40,6 @@
 [submodule "test/token/wordpress"]
 	path = test/token/wordpress
 	url = https://github.com/WordPress/WordPress.git
+[submodule "test/token/cakephp"]
+	path = test/token/cakephp
+	url = https://github.com/cakephp/cakephp.git
