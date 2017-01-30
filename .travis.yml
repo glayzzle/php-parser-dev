@@ -11,7 +11,7 @@ cache:
 before_script:
   - git submodule init lib/
   - git submodule init test/php-langspec/
-  - [[ -f test/tokens/README.md ]] ||  git submodule init test/tokens/
+  - if [[ -f test/tokens/README.md ]]; then git submodule init test/tokens/; fi
 notifications:
   email: false
   webhooks:
