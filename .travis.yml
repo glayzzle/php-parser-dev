@@ -7,13 +7,11 @@ cache:
   bundler: true
   directories:
   - node_modules # NPM package
-  - test/token # SUBMODULES
+  - test/tokens # SUBMODULES
 before_script:
-  - sudo apt-get install python-software-properties -y
-  - sudo LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php -y
-  - sudo apt-get update -y
-  - sudo apt-get install php7.0 php7.0-xml -y
-  - php -v
+  - git submodule init lib/
+  - git submodule init test/php-langspec/
+  - [[ -f test/tokens/README.md ]] ||  git submodule init test/tokens/
 notifications:
   email: false
   webhooks:
