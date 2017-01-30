@@ -4,6 +4,7 @@
   "description": "tests for php-parser lib",
   "main": "bin/test.js",
   "scripts": {
+    "cache": "npm update && git submodule update --init --recursive",
     "test": "node --stack-size=5000 bin/test.js -r -d test/ -m lib/test/",
     "cover": "node --stack-size=5000 node_modules/istanbul/lib/cli.js cover -x \"**/bin/**\" bin/test.js -- -r -d test/ -m lib/test/"
   },
