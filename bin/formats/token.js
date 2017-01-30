@@ -13,11 +13,7 @@ module.exports = {
       fs.unlink(filename);
       return false;
     }
-    return filename.indexOf("/token/") > -1 && (
-      ext == '.php'
-      || ext == '.phtml'
-      || ext == '.html'
-    );
+    return ext === '.token';
   }
   ,run: function(filename, engine, opt) {
     if (engine.parser.debug) console.log(filename);
@@ -26,13 +22,27 @@ module.exports = {
     var fail = false, ignoreSize = false;
     var error = [[], []];
 
+    // read tokens
+    var buffer = '';
+    var phpTok = JSON.parse(fs.readFileSync(filename, {
+      encoding: 'utf8'
+    }));
+
+    // rebuilds the buffer from tokens
+    for(var i = 0; i < phpTok.length; i++) {
+      var tok = phpTok[i];
+      if (typeof tok === 'string') {
+        buffer += tok;
+      } else {
+        buffer += tok[1];
+      }
+    }
+
+    // parse all tokens
     if (engine.parser.debug) {
       hrstart = process.hrtime();
       mem = process.memoryUsage();
     }
-    var buffer = fs.readFileSync(filename, {
-      encoding: 'binary'
-    });
     jsTok = engine.tokenGetAll(buffer);
     if (engine.parser.debug) {
       var  hrend = process.hrtime(hrstart);
@@ -44,45 +54,6 @@ module.exports = {
         Math.round(hrend[1] / 100000) / 10, 'ms'
       );
       console.log('Memory : ', Math.round((process.memoryUsage().heapUsed - mem.heapUsed) / 1024), 'kb');
-    }
-
-    // USING THE PHP ENGINE TO PARSE
-    var phpTok = false;
-    var phpTokFilename = filename.replace('/token/', '/php-token/') + '.token';
-    try {
-      phpTok = JSON.parse(fs.readFileSync(phpTokFilename, { encoding: 'utf8' }));
-    } catch(e) {
-      if (engine.parser.debug) {
-        console.log(phpTokFilename + '\n' + e.stack);
-      }
-    }
-    if (opt.build || phpTok === false) {
-      var result = cmd.exec('php -d short_open_tag=1 ' + (engine.lexer.asp_tags ? '-d asp_tags=1 ': '') + __dirname + '/token.php ' + filename);
-      var phpTokPath = phpTokFilename.split('/');
-      phpTokPath.pop(); // remove filename
-      phpTokPath.forEach(function(dir, index) {
-        var parent, dirPath;
-        if (index > 0) {
-          parent = phpTokPath.slice(0, index).join('/');
-          dirPath = parent + '/' + dir;
-        } else {
-          dirPath = dir;
-        }
-        if (!fs.existsSync(dirPath)) {
-          fs.mkdirSync(dirPath);
-        }
-      });
-      fs.writeFileSync(phpTokFilename, result.stdout, { encoding: 'utf8' });
-      try {
-        phpTok = JSON.parse(result.stdout);
-      } catch(e) {
-        console.log('Fail to parse output : ', result.stdout);
-        if (engine.parser.debug) {
-          throw e;
-        } else {
-          return true; // ignore this test : php can't parse the file
-        }
-      }
     }
 
     // CHECK ALL TOKENS
@@ -106,7 +77,7 @@ module.exports = {
           if (p[0] === 'T_HALT_COMPILER' && !fail) {
             // should not check tokens after T_HALT_COMPILER
             // because php 5.x differs from php 7.x
-            // @todo use by default the php7 behavior
+            // @fixme use by default the php7 behavior
             ignoreSize = true;
             break;
           }
