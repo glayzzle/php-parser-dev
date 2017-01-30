@@ -46,3 +46,6 @@
 [submodule "test/token/drupal"]
 	path = test/token/drupal
 	url = https://github.com/drupal/drupal
+[submodule "test/tokens"]
+	path = test/tokens
+	url = https://github.com/glayzzle/php-parser-dev-tokens.git
