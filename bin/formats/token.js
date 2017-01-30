@@ -19,10 +19,13 @@ module.exports = {
       || ext == '.html'
     );
   }
-  ,run: function(filename, engine) {
+  ,run: function(filename, engine, opt) {
     if (engine.parser.debug) console.log(filename);
     // USING THE LEXER TO PARSE THE FILE :
     var hrstart, mem, jsTok;
+    var fail = false, ignoreSize = false;
+    var error = [[], []];
+
     if (engine.parser.debug) {
       hrstart = process.hrtime();
       mem = process.memoryUsage();
@@ -44,21 +47,43 @@ module.exports = {
     }
 
     // USING THE PHP ENGINE TO PARSE
-    var result = cmd.exec('php -d short_open_tag=1 ' + (engine.lexer.asp_tags ? '-d asp_tags=1 ': '') + __dirname + '/token.php ' + filename);
     var phpTok = false;
+    var phpTokFilename = filename.replace('/token/', '/php-token/') + '.token';
     try {
-      phpTok = JSON.parse(result.stdout);
+      phpTok = JSON.parse(fs.readFileSync(phpTokFilename, { encoding: 'utf8' }));
     } catch(e) {
-      console.log('Fail to parse output : ', result.stdout);
       if (engine.parser.debug) {
-        throw e;
-      } else {
-        return true; // ignore this test : php can't parse the file
+        console.log(phpTokFilename + '\n' + e.stack);
       }
     }
-
-    var fail = false, ignoreSize = false;
-    var error = [[], []];
+    if (opt.build || phpTok === false) {
+      var result = cmd.exec('php -d short_open_tag=1 ' + (engine.lexer.asp_tags ? '-d asp_tags=1 ': '') + __dirname + '/token.php ' + filename);
+      var phpTokPath = phpTokFilename.split('/');
+      phpTokPath.pop(); // remove filename
+      phpTokPath.forEach(function(dir, index) {
+        var parent, dirPath;
+        if (index > 0) {
+          parent = phpTokPath.slice(0, index).join('/');
+          dirPath = parent + '/' + dir;
+        } else {
+          dirPath = dir;
+        }
+        if (!fs.existsSync(dirPath)) {
+          fs.mkdirSync(dirPath);
+        }
+      });
+      fs.writeFileSync(phpTokFilename, result.stdout, { encoding: 'utf8' });
+      try {
+        phpTok = JSON.parse(result.stdout);
+      } catch(e) {
+        console.log('Fail to parse output : ', result.stdout);
+        if (engine.parser.debug) {
+          throw e;
+        } else {
+          return true; // ignore this test : php can't parse the file
+        }
+      }
+    }
 
     // CHECK ALL TOKENS
     for(var i = 0; i < phpTok.length; i++) {
@@ -75,15 +100,8 @@ module.exports = {
       if ( p instanceof Array ) {
         if ( j instanceof Array ) {
           if (p[0] != j[0]) { // check the token type
-            /*if (
-              (p[0] == 'T_LNUMBER' || p[0] == 'T_DNUMBER')
-              && (j[0] == 'T_LNUMBER' || j[0] == 'T_DNUMBER')
-            ) {
-              // @fixme : ignore numbers size - long are not handled in same way
-            } else {*/
             console.log('FAIL : Expected ' + p[0] + ' token, but found ' + j[0]);
             fail = true;
-            //}
           }
           if (p[0] === 'T_HALT_COMPILER' && !fail) {
             // should not check tokens after T_HALT_COMPILER
@@ -122,7 +140,7 @@ module.exports = {
     if (!ignoreSize && phpTok.length != jsTok.length) {
       console.log('FAIL : Token arrays have not the same length !');
       fail = true;
-    }
+    } /* */
     if (fail) {
       console.log('\nError at : ' + filename);
       console.log('\nJS Tokens', error[0]);

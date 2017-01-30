@@ -55,7 +55,8 @@ var options = {
   recursive: false,
   evalCode: false,
   aspShort: false,
-  mocha: false
+  mocha: false,
+  build: false
 };
 
 var args = process.argv.slice(2); // Trim 'node' and the script path.
@@ -80,6 +81,12 @@ while (args.length > 0 && isOption(args[0])) {
     case '-e':
       nextArg();
       options.evalCode = args[0];
+      break;
+
+    // builds tokens with actual PHP version
+    case '--build':
+      nextArg();
+      options.build = true;
       break;
 
     case '--asp_short':
@@ -177,9 +184,10 @@ function test(filename) {
             )
             , filename
             , engine
+            , options
           );
         } else {
-          result = engines[i].run(filename, engine);
+          result = engines[i].run(filename, engine, options);
         }
         if (!result) {
           if (engine.parser.debug) {

@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - '0.12'
+  - 4
 git:
   submodules: false
 cache:
@@ -22,5 +22,5 @@ notifications:
     on_success: change
     on_failure: always
     on_start: never
-script: npm run cache
+script: npm run test
 after_success: cat /home/travis/build/glayzzle/php-parser-dev/coverage/lcov.info | /home/travis/build/glayzzle/php-parser-dev/node_modules/coveralls/bin/coveralls.js
