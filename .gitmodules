@@ -43,3 +43,6 @@
 [submodule "test/token/cakephp"]
 	path = test/token/cakephp
 	url = https://github.com/cakephp/cakephp.git
+[submodule "test/token/drupal"]
+	path = test/token/drupal
+	url = https://github.com/drupal/drupal
