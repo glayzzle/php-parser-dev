@@ -9,9 +9,9 @@ cache:
   - node_modules # NPM package
   - test/tokens # SUBMODULES
 before_script:
-  - git submodule init lib/
-  - git submodule init test/php-langspec/
-  - if [[ -f test/tokens/README.md ]]; then git submodule init test/tokens/; fi
+  - git submodule update --init lib/
+  - git submodule update --init test/php-langspec/
+  - if [[ -f test/tokens/README.md ]]; then git submodule update --init test/tokens/; fi
 notifications:
   email: false
   webhooks:
