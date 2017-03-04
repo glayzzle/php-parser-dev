@@ -6,6 +6,8 @@
 var fs = require('fs');
 var cmd = require('./cmd');
 var util = require('util');
+var zlib = require('zlib');
+var gzip = zlib.createGzip();
 
 module.exports = {
   handles: function(filename, ext) {
@@ -24,9 +26,11 @@ module.exports = {
 
     // read tokens
     var buffer = '';
-    var phpTok = JSON.parse(fs.readFileSync(filename, {
-      encoding: 'utf8'
-    }));
+    var phpTok = JSON.parse(
+      zlib.inflateSync(
+        fs.readFileSync(filename)
+      ).toString('utf8')
+    );
 
     // rebuilds the buffer from tokens
     for(var i = 0; i < phpTok.length; i++) {
