@@ -19,7 +19,8 @@ engine = new engine({
     withPositions: true
   },
   lexer: {
-    short_tags: true
+    short_tags: false,
+    asp_tags: false
   },
   parser: {
     extractDoc: true
