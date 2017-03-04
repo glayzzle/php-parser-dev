@@ -18,10 +18,12 @@ $ node test.js -e "echo 'Hello World';"
 
 * [beaba](https://github.com/ichiriac/beaba)
 * [laravel](https://github.com/laravel/laravel)
+* [htmlpurifier](https://github.com/ezyang/htmlpurifier)
 * [zf2](https://github.com/zendframework/zf2)
 * [symfony](https://github.com/symfony/symfony)
 * [tcpdf](https://github.com/tecnickcom/TCPDF)
 * [evernote-cloud-sdk-php](https://github.com/evernote/evernote-cloud-sdk-php)
+* [yii1](https://github.com/yiisoft/yii)
 * [yii2](https://github.com/yiisoft/yii2)
 * [CodeIgniter](https://github.com/bcit-ci/CodeIgniter)
 * [magento1](https://github.com/bragento/magento-core)
