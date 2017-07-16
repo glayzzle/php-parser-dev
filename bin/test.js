@@ -249,6 +249,7 @@ function runTests() {
   console.log('\n*** START TESTING ***\n');
   if (options.evalCode) {
     var EOF = engine.lexer.EOF;
+    engine.ast.withPositions = false;
     engine.lexer.mode_eval = true;
     engine.lexer.all_tokens = false;
     engine.lexer.setInput(options.evalCode);
