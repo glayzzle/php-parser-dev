@@ -35,5 +35,9 @@ Test statements
   $foo::$bar[123]->baz['azerty'];
 --FAIL--
   $foo::$bar[123]->baz['azerty']->'azerty';
---FAIL--
+--PASS--
   foo::echo;
+--FAIL--
+  foo::;
+--FAIL--
+  foo::+;
